@@ -37,25 +37,30 @@ function cerrarSesion() {
   }
   
   const usuario = sessionStorage.getItem("usuario");
-  
-  if (!usuario) {
-    window.location.href = "index.html";
-  } else {
-    const data = JSON.parse(usuario);
-    document.getElementById("nombreUsuario").innerText = data.nombre || "Empleado";
-    document.getElementById("correo").innerText = data.correo || "No disponible";
-    document.getElementById("sucursal").innerText = data.sucursal || "Sin asignar";
-    document.getElementById("puesto").innerText = data.puesto || "No especificado";
-  
-    const fechaInicio = new Date(data.fechaInicio);
-    const fechaFormateada = ("0" + fechaInicio.getDate()).slice(-2) + "/" +
-                            ("0" + (fechaInicio.getMonth() + 1)).slice(-2) + "/" +
-                            fechaInicio.getFullYear();
-    document.getElementById("fechaInicio").innerText = fechaFormateada;
-  
-    const tiempo = calcularTiempoTrabajado(data.fechaInicio);
-    document.getElementById("tiempoTrabajado").innerText = `${tiempo.years} años, ${tiempo.months} meses, ${tiempo.days} días`;
-  
-    const diasParaCumple = calcularDiasParaCumple(data.fechaCumple);
+
+if (!usuario) {
+  window.location.href = "index.html";
+} else {
+  const data = JSON.parse(usuario);
+  document.getElementById("nombreUsuario").innerText = data.nombre || "Empleado";
+  document.getElementById("correo").innerText = data.correo || "No disponible";
+  document.getElementById("sucursal").innerText = data.sucursal || "Sin asignar";
+  document.getElementById("puesto").innerText = data.puesto || "No especificado";
+
+  const fechaInicio = new Date(data.fechaInicio);
+  const fechaFormateada = ("0" + fechaInicio.getDate()).slice(-2) + "/" +
+                          ("0" + (fechaInicio.getMonth() + 1)).slice(-2) + "/" +
+                          fechaInicio.getFullYear();
+  document.getElementById("fechaInicio").innerText = fechaFormateada;
+
+  const tiempo = calcularTiempoTrabajado(data.fechaInicio);
+  document.getElementById("tiempoTrabajado").innerText = `${tiempo.years} años, ${tiempo.months} meses, ${tiempo.days} días`;
+
+  // ✅ Validación para que utilice fechaNacimiento
+  if (data.fechaNacimiento) {
+    const diasParaCumple = calcularDiasParaCumple(data.fechaNacimiento);
     document.getElementById("diasParaCumple").innerText = `${diasParaCumple} días`;
-  }  
+  } else {
+    document.getElementById("diasParaCumple").innerText = "Fecha de nacimiento no registrada";
+  }
+}
