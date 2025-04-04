@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Empleado</title>
+</head>
+<body>
+  <h2>Bienvenido, <span id="nombreUsuario"></span></h2>
+
+  <script>
+    // Verificar si el usuario está autenticado
+    const usuario = sessionStorage.getItem("usuario");
+
+    if (!usuario) {
+      // Si no está autenticado, redirigir al login
+      window.location.href = "index.html";
+    } else {
+      const usuarioData = JSON.parse(usuario);
+      document.getElementById("nombreUsuario").innerText = usuarioData.nombre;
+    }
+  </script>
+</body>
+</html>
