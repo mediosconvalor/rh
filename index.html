@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal RRHH - Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f9;
+    }
+
+    h2 {
+      color: #333;
+      text-align: center;
+    }
+
+    form {
+      margin: 0 auto;
+      width: 300px;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    p {
+      text-align: center;
+      color: #f44336;
+    }
+  </style>
+</head>
+<body>
+  <h2>Login de Portal RRHH</h2>
+
+  <form onsubmit="return login()">
+    <input type="email" id="email" placeholder="Correo" required>
+    <input type="password" id="password" placeholder="Contraseña" required>
+    <button type="submit">Iniciar sesión</button>
+  </form>
+
+  <p id="error-message" style="display:none;">Correo o Contraseña incorrectos.</p>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycby0SulXoMdXPI1pjqgYoM9zWmZkMDx58bK5v-7Wfg5B72rqxJOAOnFWh5gxzBo3IVXc/exec"; // URL de tu script
+
+    function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      fetch(`${scriptURL}?action=login&email=${email}&password=${password}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            sessionStorage.setItem("usuario", JSON.stringify(data.usuario));
+
+            // Redirigir según el tipo de usuario
+            if (data.usuario.tipo === 'empleado') {
+              window.location.href = "panel-empleado.html";
+            } else if (data.usuario.tipo === 'admin') {
+              window.location.href = "panel-admin.html";
+            } else if (data.usuario.tipo === 'superadmin') {
+              window.location.href = "panel-superadmin.html";
+            }
+          } else {
+            document.getElementById("error-message").style.display = "block";
+          }
+        })
+        .catch(err => {
+          console.error("Error al hacer el fetch:", err);
+          document.getElementById("error-message").style.display = "block";
+        });
+
+      return false;
+    }
+  </script>
+</body>
+</html>
