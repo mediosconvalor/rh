@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Empleado</title>
+</head>
+<body>
+  <h2>Bienvenido, <span id="nombreEmpleado"></span></h2>
+  <p><strong>Correo:</strong> <span id="correoEmpleado"></span></p>
+  <p><strong>Departamento:</strong> <span id="departamentoEmpleado"></span></p>
+
+  <script>
+    const empleado = JSON.parse(sessionStorage.getItem("empleado"));
+
+    if (!empleado) {
+      alert("Debes iniciar sesión.");
+      window.location.href = "index.html";
+    } else {
+      document.getElementById("nombreEmpleado").innerText = empleado.nombre;
+      document.getElementById("correoEmpleado").innerText = empleado.correo;
+      document.getElementById("departamentoEmpleado").innerText = empleado.departamento;
+    }
+  </script>
+</body>
+</html>
