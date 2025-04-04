@@ -2,23 +2,29 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <title>Panel Empleado</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel de Empleado</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h2>Bienvenido, <span id="nombreUsuario"></span></h2>
+  <header>
+    <img src="https://raw.githubusercontent.com/mediosconvalor/rh/refs/heads/main/img/logo.png" alt="Logo">
+    <h1>Bienvenido, <span id="nombreUsuario"></span></h1>
+    <button class="logout" onclick="cerrarSesion()">Cerrar sesión</button>
+  </header>
 
-  <script>
-    // Verificar si el usuario está autenticado
-    const usuario = sessionStorage.getItem("usuario");
+  <main>
+    <section>
+      <h3>Información General</h3>
+      <p><strong>Correo:</strong> <span id="correo"></span></p>
+      <p><strong>Sucursal:</strong> <span id="sucursal"></span></p>
+      <p><strong>Puesto:</strong> <span id="puesto"></span></p>
+      <p><strong>Fecha de inicio de trabajo:</strong> <span id="fechaInicio"></span></p>
+      <p><strong>Tiempo trabajado:</strong> <span id="tiempoTrabajado"></span></p>
+      <p><strong>Días restantes para tu cumpleaños:</strong> <span id="diasParaCumple"></span></p>
+    </section>
+  </main>
 
-    if (!usuario) {
-      // Si no está autenticado, redirigir al login
-      window.location.href = "index.html";
-    } else {
-      const usuarioData = JSON.parse(usuario);
-      document.getElementById("nombreUsuario").innerText = usuarioData.nombre;
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
