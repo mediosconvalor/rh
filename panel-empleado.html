@@ -36,7 +36,7 @@
       const fechaInicio = document.getElementById("fechaInicio").value;
       const fechaFin = document.getElementById("fechaFin").value;
       
-      fetch(`https://script.google.com/macros/s/AKfycbxxxxxxxxxxxxxx/exec?action=solicitarPermiso&email=${empleado.correo}&motivo=${motivo}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`)
+      fetch(`https://script.google.com/macros/s/AKfycbxQAYsul69mwg6Zx1KLJsilhJndMU6a3UR4q-6mLF1SsldNX1jpv8HMNEzbpaxF7Jbr/exec?action=solicitarPermiso&email=${empleado.correo}&motivo=${motivo}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`)
         .then(res => res.json())
         .then(data => {
           if (data.success) {
