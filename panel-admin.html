@@ -8,11 +8,18 @@
   <h2>Panel de Administración</h2>
   <p>Bienvenido, <span id="nombreAdmin"></span></p>
 
-  <ul>
-    <li><a href="#">Ver empleados</a></li>
-    <li><a href="#">Solicitudes</a></li>
-    <li><a href="#">Configuración</a></li>
-  </ul>
+  <h3>Empleados</h3>
+  <button onclick="verEmpleados()">Ver empleados</button>
+  <table id="tablaEmpleados" style="display:none;">
+    <tr><th>Correo</th><th>Nombre</th><th>Departamento</th><th>Puesto</th><th>Acciones</th></tr>
+  </table>
+
+  <h3>Solicitudes de Permiso</h3>
+  <table id="tablaSolicitudes" style="display:none;">
+    <tr><th>Empleado</th><th>Motivo</th><th>Fecha Inicio</th><th>Fecha Fin</th><th>Acción</th></tr>
+  </table>
+
+  <button onclick="cerrarSesion()">Cerrar sesión</button>
 
   <script>
     const admin = JSON.parse(sessionStorage.getItem("admin"));
@@ -22,6 +29,24 @@
       window.location.href = "index.html";
     } else {
       document.getElementById("nombreAdmin").innerText = admin.nombre;
+    }
+
+    function verEmpleados() {
+      fetch('https://script.google.com/macros/s/AKfycbxxxxxxxxxxxxxx/exec?action=verEmpleados')
+        .then(res => res.json())
+        .then(data => {
+          const table = document.getElementById("tablaEmpleados");
+          table.style.display = "block";
+          data.empleados.forEach(empleado => {
+            const row = table.insertRow();
+            row.innerHTML = `<td>${empleado.correo}</td><td>${empleado.nombre}</td><td>${empleado.departamento}</td><td>${empleado.puesto}</td><td><button>Editar</button></td>`;
+          });
+        });
+    }
+
+    function cerrarSesion() {
+      sessionStorage.removeItem("admin");
+      window.location.href = "index.html";
     }
   </script>
 </body>
