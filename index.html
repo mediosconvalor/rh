@@ -2,42 +2,35 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Portal RRHH - Empleados</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="login-container">
-    <h2>Ingreso de Empleados</h2>
-    <form id="loginForm" onsubmit="return validateEmployeeLogin()">
-      <label for="email">Correo:</label>
-      <input type="email" id="email" required>
-
-      <label for="rfc">RFC (como contraseña):</label>
-      <input type="text" id="rfc" required>
-
-      <button type="submit">Entrar</button>
+  <header>
+    <h2>Bienvenido a la Plataforma</h2>
+  </header>
+  
+  <div class="container">
+    <h3>Iniciar sesión</h3>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Correo Electrónico" required>
+      <input type="password" id="password" placeholder="Contraseña" required>
+      <button type="submit">Iniciar sesión</button>
     </form>
-    <div class="admin-link">
-      <p>¿Eres administrador? <a href="admin.html">Entra aquí</a></p>
-    </div>
+    <p>No tienes cuenta? <a href="registro.html">Regístrate</a></p>
   </div>
 
+  <footer>
+    <p>&copy; 2025 Medios Con Valor</p>
+  </footer>
+
   <script>
-    function validateEmployeeLogin() {
-      var email = document.getElementById("email").value;
-      var rfc = document.getElementById("rfc").value;
-
-      google.script.run.withSuccessHandler(function(isValid) {
-        if (isValid) {
-          alert("Acceso concedido");
-          window.location.href = "panelEmpleado.html"; // tu panel para empleados
-        } else {
-          alert("Correo o RFC incorrecto");
-        }
-      }).validateEmployee(email, rfc);
-
-      return false;
-    }
+    // Agrega la lógica de login aquí
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      // Lógica para validar usuario
+    });
   </script>
 </body>
 </html>
