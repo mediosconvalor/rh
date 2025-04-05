@@ -1,66 +1,81 @@
 function cerrarSesion() {
-    sessionStorage.clear();
-    window.location.href = "index.html";
-  }
-  
-  function calcularTiempoTrabajado(fechaInicio) {
-    const inicio = new Date(fechaInicio);
-    const hoy = new Date();
-    let years = hoy.getFullYear() - inicio.getFullYear();
-    let months = hoy.getMonth() - inicio.getMonth();
-    let days = hoy.getDate() - inicio.getDate();
-  
-    if (days < 0) {
-      months--;
-      days += new Date(hoy.getFullYear(), hoy.getMonth(), 0).getDate();
-    }
-  
-    if (months < 0) {
-      years--;
-      months += 12;
-    }
-  
-    return { years, months, days };
-  }
-  
-  function calcularDiasParaCumple(fechaCumple) {
-    const hoy = new Date();
-    const cumple = new Date(fechaCumple);
-    cumple.setFullYear(hoy.getFullYear());
-  
-    if (cumple < hoy) {
-      cumple.setFullYear(hoy.getFullYear() + 1);
-    }
-  
-    const diff = Math.ceil((cumple - hoy) / (1000 * 60 * 60 * 24));
-    return diff;
-  }
-  
-  const usuario = sessionStorage.getItem("usuario");
+  sessionStorage.clear();
+  window.location.href = "/index.html";
+}
 
-if (!usuario) {
-  window.location.href = "index.html";
-} else {
-  const data = JSON.parse(usuario);
-  document.getElementById("nombreUsuario").innerText = data.nombre || "Empleado";
-  document.getElementById("correo").innerText = data.correo || "No disponible";
-  document.getElementById("sucursal").innerText = data.sucursal || "Sin asignar";
-  document.getElementById("puesto").innerText = data.puesto || "No especificado";
+function calcularTiempoTrabajado(fechaInicio) {
+  const inicio = new Date(fechaInicio);
+  const hoy = new Date();
 
-  const fechaInicio = new Date(data.fechaInicio);
-  const fechaFormateada = ("0" + fechaInicio.getDate()).slice(-2) + "/" +
-                          ("0" + (fechaInicio.getMonth() + 1)).slice(-2) + "/" +
-                          fechaInicio.getFullYear();
-  document.getElementById("fechaInicio").innerText = fechaFormateada;
+  let años = hoy.getFullYear() - inicio.getFullYear();
+  let meses = hoy.getMonth() - inicio.getMonth();
+  let dias = hoy.getDate() - inicio.getDate();
 
-  const tiempo = calcularTiempoTrabajado(data.fechaInicio);
-  document.getElementById("tiempoTrabajado").innerText = `${tiempo.years} años, ${tiempo.months} meses, ${tiempo.days} días`;
-
-  // ✅ Validación para que utilice fechaNacimiento
-  if (data.fechaNacimiento) {
-    const diasParaCumple = calcularDiasParaCumple(data.fechaNacimiento);
-    document.getElementById("diasParaCumple").innerText = `${diasParaCumple} días`;
-  } else {
-    document.getElementById("diasParaCumple").innerText = "Fecha de nacimiento no registrada";
+  if (dias < 0) {
+    meses--;
+    dias += new Date(hoy.getFullYear(), hoy.getMonth(), 0).getDate();
   }
+
+  if (meses < 0) {
+    años--;
+    meses += 12;
+  }
+
+  return { años, meses, dias };
+}
+
+function calcularDiasParaCumple(fechaNacimiento) {
+  const hoy = new Date();
+  const cumple = new Date(fechaNacimiento);
+  cumple.setFullYear(hoy.getFullYear());
+
+  if (cumple < hoy) {
+    cumple.setFullYear(hoy.getFullYear() + 1);
+  }
+
+  const diff = Math.ceil((cumple - hoy) / (1000 * 60 * 60 * 24));
+  return diff;
+}
+
+function mostrarInformacionUsuario() {
+  const usuario = JSON.parse(sessionStorage.getItem("usuario"));
+  if (!usuario) {
+    window.location.href = "/index.html";
+    return;
+  }
+
+  document.getElementById("nombreUsuario").innerText = usuario.nombre || "Empleado";
+  if (document.getElementById("correo")) document.getElementById("correo").innerText = usuario.correo || "Sin correo";
+  if (document.getElementById("sucursal")) document.getElementById("sucursal").innerText = usuario.sucursal || "Sin sucursal";
+  if (document.getElementById("puesto")) document.getElementById("puesto").innerText = usuario.puesto || "Sin puesto";
+
+  if (usuario.fechaInicio && document.getElementById("fechaInicio")) {
+    const inicio = new Date(usuario.fechaInicio);
+    const fechaTexto = `${inicio.getDate().toString().padStart(2, '0')}/${(inicio.getMonth() + 1).toString().padStart(2, '0')}/${inicio.getFullYear()}`;
+    document.getElementById("fechaInicio").innerText = fechaTexto;
+  }
+
+  if (usuario.fechaInicio && document.getElementById("tiempoTrabajado")) {
+    const tiempo = calcularTiempoTrabajado(usuario.fechaInicio);
+    document.getElementById("tiempoTrabajado").innerText = `${tiempo.años} años, ${tiempo.meses} meses, ${tiempo.dias} días`;
+  }
+
+  if (usuario.fechaNacimiento && document.getElementById("diasParaCumple")) {
+    const dias = calcularDiasParaCumple(usuario.fechaNacimiento);
+    document.getElementById("diasParaCumple").innerText = `${dias} días`;
+  }
+}
+
+function mostrarPerfil() {
+  const usuario = JSON.parse(sessionStorage.getItem("usuario"));
+  if (!usuario) {
+    window.location.href = "/index.html";
+    return;
+  }
+
+  document.getElementById("nombreUsuario").innerText = usuario.nombre || "Sin nombre";
+  document.getElementById("correo").innerText = usuario.correo || "Sin correo";
+
+  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(usuario.nombre || 'U')}&background=2596be&color=fff&rounded=true&size=100`;
+  document.getElementById("avatar").src = avatarUrl;
 }
