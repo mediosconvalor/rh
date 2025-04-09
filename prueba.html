@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulario con Imagen</title>
+  <link rel="icon" href="https://mediosconvalor.com/wp-content/uploads/2019/03/cropped-favicon-32x32-1-32x32.png">
+  <style>
+    body {
+      font-family: "Inter UI", sans-serif;
+      background: #f4f7fa;
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      color: #333;
+    }
+    input, textarea, button {
+      display: block;
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    button {
+      background: #008CBA;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #007ba7;
+    }
+    .mensaje {
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 6px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h2>Formulario con Imagen</h2>
+  <form id="formularioRegistro">
+    <input type="text" id="nombre" placeholder="Nombre completo" required>
+    <input type="email" id="correo" placeholder="Correo electrónico" required>
+    <input type="tel" id="telefono" placeholder="Teléfono" required>
+    <textarea id="comentario" placeholder="Comentario" rows="4"></textarea>
+    <input type="file" id="imagen" accept="image/*" required>
+    <button type="submit">Enviar información</button>
+  </form>
+  <div id="respuesta" class="mensaje"></div>
+
+  <script>
+    const urlAppScript = 'https://script.google.com/macros/s/AKfycbys-mRTynzoKHo4Cq8REBCC2SAvF_m9WFkb9EOYOMCbi25oIrLPfVBHgA2tb5ApPNgZpg/exec'; // Cambia esto
+
+    document.getElementById('formularioRegistro').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const imagen = document.getElementById('imagen').files[0];
+      const lector = new FileReader();
+
+      lector.onloadend = () => {
+        const imagenBase64 = lector.result.split(',')[1];
+        const tipoImagen = imagen.type;
+        const nombreImagen = imagen.name;
+
+        const datos = {
+          nombre: document.getElementById('nombre').value,
+          correo: document.getElementById('correo').value,
+          telefono: document.getElementById('telefono').value,
+          comentario: document.getElementById('comentario').value,
+          imagenBase64: imagenBase64,
+          tipoImagen: tipoImagen,
+          nombreImagen: nombreImagen
+        };
+
+        fetch(urlAppScript, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datos)
+        })
+        .then(response => response.json())
+        .then(res => {
+          if(res.resultado === "éxito"){
+            document.getElementById('respuesta').innerHTML = '¡Información enviada! <br><a href="'+res.urlImagen+'" target="_blank">Ver imagen subida</a>';
+            document.getElementById('formularioRegistro').reset();
+          } else {
+            document.getElementById('respuesta').innerHTML = 'Error: ' + res.mensaje;
+          }
+        })
+        .catch(error => {
+          document.getElementById('respuesta').innerHTML = 'Error al enviar: ' + error.message;
+        });
+      };
+
+      if(imagen) lector.readAsDataURL(imagen);
+      else document.getElementById('respuesta').innerHTML = 'Debes seleccionar una imagen.';
+    });
+  </script>
+</body>
+</html>
