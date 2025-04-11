@@ -2,100 +2,60 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Formulario con Imagen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moderador</title>
+  <link rel="stylesheet" href="/portal-rh/styles.css">
   <link rel="icon" href="https://mediosconvalor.com/wp-content/uploads/2019/03/cropped-favicon-32x32-1-32x32.png">
+  <script src="/portal-rh/script.js" defer></script>
   <style>
-    body {
-      font-family: "Inter UI", sans-serif;
-      background: #f4f7fa;
-      max-width: 600px;
-      margin: auto;
+    .section-formulario {
       padding: 20px;
-      color: #333;
+      margin: 20px auto;
+      max-width: 900px;
+      background-color: #1E1E1E;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
     }
-    input, textarea, button {
-      display: block;
-      width: 100%;
+    .section-formulario h2 {
       margin-bottom: 15px;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
-    button {
-      background: #008CBA;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #007ba7;
-    }
-    .mensaje {
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 6px;
+      font-size: 1.6em;
+      color: #fff;
       text-align: center;
     }
   </style>
 </head>
 <body>
-  <h2>Formulario con Imagen</h2>
-  <form id="formularioRegistro">
-    <input type="text" id="nombre" placeholder="Nombre completo" required>
-    <input type="email" id="correo" placeholder="Correo electrónico" required>
-    <input type="tel" id="telefono" placeholder="Teléfono" required>
-    <textarea id="comentario" placeholder="Comentario" rows="4"></textarea>
-    <input type="file" id="imagen" accept="image/*" required>
-    <button type="submit">Enviar información</button>
-  </form>
-  <div id="respuesta" class="mensaje"></div>
+
+  <!-- Menú interactivo (existente) -->
+  <nav class="menu">
+    <ul>
+      <li><a href="/portal-rh/dashboard/usuario/index.html">Inicio</a></li>
+      <li><a href="/portal-rh/perfil/index.html">Perfil</a></li>
+      <li><a href="/portal-rh/dashboard/mod/index.html">Moderador</a></li>
+      <li><a href="#" onclick="cerrarSesion()">Cerrar sesión</a></li>
+    </ul>
+  </nav>
+
+  <!-- Contenido principal -->
+  <main>
+
+    <!-- Sección formulario integrado -->
+    <section class="section-formulario">
+      <h2>Subir Documento del Colaborador</h2>
+      <iframe 
+        src="https://script.google.com/macros/s/AKfycbzgqp_F2gIxdV5YTJNzKHtA-OmMMTFlvd6oDQoABRrTeRMiQxrcZ_BfBOszY7ZcglQwtQ/exec"
+        style="width:100%; height:800px; border:none; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.2);">
+      </iframe>
+    </section>
+
+  </main>
 
   <script>
-    const urlAppScript = 'https://script.google.com/macros/s/AKfycbys-mRTynzoKHo4Cq8REBCC2SAvF_m9WFkb9EOYOMCbi25oIrLPfVBHgA2tb5ApPNgZpg/exec'; // Cambia esto
-
-    document.getElementById('formularioRegistro').addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      const imagen = document.getElementById('imagen').files[0];
-      const lector = new FileReader();
-
-      lector.onloadend = () => {
-        const imagenBase64 = lector.result.split(',')[1];
-        const tipoImagen = imagen.type;
-        const nombreImagen = imagen.name;
-
-        const datos = {
-          nombre: document.getElementById('nombre').value,
-          correo: document.getElementById('correo').value,
-          telefono: document.getElementById('telefono').value,
-          comentario: document.getElementById('comentario').value,
-          imagenBase64: imagenBase64,
-          tipoImagen: tipoImagen,
-          nombreImagen: nombreImagen
-        };
-
-        fetch(urlAppScript, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(datos)
-        })
-        .then(response => response.json())
-        .then(res => {
-          if(res.resultado === "éxito"){
-            document.getElementById('respuesta').innerHTML = '¡Información enviada! <br><a href="'+res.urlImagen+'" target="_blank">Ver imagen subida</a>';
-            document.getElementById('formularioRegistro').reset();
-          } else {
-            document.getElementById('respuesta').innerHTML = 'Error: ' + res.mensaje;
-          }
-        })
-        .catch(error => {
-          document.getElementById('respuesta').innerHTML = 'Error al enviar: ' + error.message;
-        });
-      };
-
-      if(imagen) lector.readAsDataURL(imagen);
-      else document.getElementById('respuesta').innerHTML = 'Debes seleccionar una imagen.';
-    });
+    function cerrarSesion(){
+      localStorage.clear();
+      window.location.href = '/portal-rh/index.html';
+    }
   </script>
+
 </body>
 </html>

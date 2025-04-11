@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portal MCV</title>
+  <style>
+    /* Establecer la imagen de fondo con blur */
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-image: url("https://mediosconvalor.com/img/1.jpg");
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Aplicar el blur solo a la imagen de fondo */
+    body::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("https://mediosconvalor.com/img/1.jpg");
+      background-size: cover;
+      background-position: center;
+      filter: blur(15px); /* Aplica el blur solo a la imagen */
+      z-index: -1; /* Asegura que el contenido esté por encima */
+    }
+
+    /* Contenedor del formulario de login con fondo oscuro */
+    .login-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 1; /* Asegura que el contenido esté por encima del fondo con blur */
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro con opacidad */
+      border-radius: 30px;
+      width: 80%;
+      max-width: 400px;
+    }
+
+    .logo {
+      width: 120px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      color: #00dd2a;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    form {
+      width: 100%;
+      max-width: 350px;
+      padding: 30px;
+      background-color: #3f4555;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #2596be;
+      border-radius: 6px;
+      background-color: #fff;
+      color: #000;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #00dd2a;
+      outline: none;
+      box-shadow: 0 0 5px #00dd2a;
+    }
+
+    input::placeholder {
+      color: #777;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #00dd2a;
+      color: #343947;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #00c827;
+    }
+
+    #forgot-password {
+      background: none;
+      border: none;
+      color: #00dd2a;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 10px;
+      text-decoration: underline;
+    }
+
+    #forgot-password:hover {
+      color: #00ff3c;
+    }
+
+    #error-message {
+      text-align: center;
+      color: #ff5c5c;
+      margin-top: 15px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <img class="logo" src="/portal-rh/img/logo.png" alt="Logo MCV">
+    <h2>Inicia sesión en tu portal</h2>
+
+    <form onsubmit="return login()">
+      <input type="email" id="email" placeholder="Correo" required>
+      <input type="password" id="password" placeholder="Contraseña" required>
+      <button type="submit" id="loginBtn">Iniciar sesión</button>
+      <button id="forgot-password" type="button" onclick="olvidoContrasena()">Olvidé mi contraseña</button>
+    </form>
+
+    <p id="error-message">Correo o Contraseña incorrectos.</p>
+  </div>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxs2LFmNxDrn80WNdeY5RKORQuAJHOyFboS9gyqAF-_3sUs3ezPTjmUJRypCfY2jxKf/exec";
+    let cargaIntervalo;
+
+    // Función para obtener la IP pública desde el cliente
+    function obtenerIP(callback) {
+      fetch('https://api.ipify.org?format=json')  // Llamada a la API ipify
+        .then(response => response.json())
+        .then(data => {
+          callback(data.ip);  // Llama al callback con la IP pública del cliente
+        })
+        .catch(error => {
+          console.error("Error al obtener la IP:", error);
+        });
+    }
+
+    function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const boton = document.getElementById("loginBtn");
+
+      boton.disabled = true;
+      boton.style.backgroundColor = "#888";
+      boton.style.cursor = "not-allowed";
+
+      const estados = ["🌱 Cargando.", "🌿 Cargando..", "🌳 Cargando..."];
+      let index = 0;
+      boton.innerText = estados[index];
+
+      cargaIntervalo = setInterval(() => {
+        index = (index + 1) % estados.length;
+        boton.innerText = estados[index];
+      }, 500);
+
+      obtenerIP(function(ip) {
+        fetch(`${scriptURL}?action=login&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}&ip=${ip}`)
+          .then(res => res.json())
+          .then(data => {
+            clearInterval(cargaIntervalo);
+            boton.innerText = "Iniciar sesión";
+            boton.disabled = false;
+            boton.style.backgroundColor = "#00dd2a";
+            boton.style.cursor = "pointer";
+
+            if (data.success) {
+              sessionStorage.setItem("usuario", JSON.stringify(data.usuario));
+              window.location.href = "dashboard/usuario/index.html";
+            } else {
+              document.getElementById("error-message").style.display = "block";
+            }
+          })
+          .catch(err => {
+            clearInterval(cargaIntervalo);
+            boton.innerText = "Iniciar sesión";
+            boton.disabled = false;
+            boton.style.backgroundColor = "#00dd2a";
+            boton.style.cursor = "pointer";
+            document.getElementById("error-message").style.display = "block";
+            console.error("Error de login:", err);
+          });
+      });
+
+      return false;
+    }
+
+    function olvidoContrasena() {
+      alert("Esta función estará disponible al finalizar el proyecto.");
+    }
+  </script>
+</body>
+</html>
