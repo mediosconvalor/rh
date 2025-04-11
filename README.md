@@ -1,2 +1,2 @@
 # Rrhh by Medios Con Valor
-portal de RRHH para el personal de MCV
+Portal de RRHH para el personal de MCV y de aprendizaje para Eduardo V
