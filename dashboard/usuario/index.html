@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Usuario</title>
+  <link rel="icon" type="image/png" href="https://mediosconvalor.com/wp-content/uploads/2019/03/cropped-favicon-32x32-1-32x32.png">
+  <link rel="stylesheet" href="/portal-rh/styles.css" />
+  <script src="/portal-rh/script.js" defer></script>
+</head>
+<body onload="mostrarPanelUsuario()">
+  <nav id="menuMobile" class="menu-mobile"></nav>
+
+  <header>
+    <button class="nav-toggle" onclick="toggleMenu()">☰</button>
+    <h1 id="saludoUsuario"><span id="saludoTexto">Bienvenido,</span> <span id="nombreUsuario">Usuario</span></h1>
+    <img class="logo" src="/portal-rh/img/logo.png" alt="Logo MCV" />
+  </header>
+
+  <nav id="menuDesktop" class="menu-desktop"></nav>
+
+  <main>
+    <section>
+      <h3>Información General</h3>
+      <p><strong>Correo:</strong> <span id="correo"></span></p>
+      <p><strong>Sucursal:</strong> <span id="sucursal"></span></p>
+      <p><strong>Puesto:</strong> <span id="puesto"></span></p>
+      <p><strong>Fecha de inicio de trabajo:</strong> <span id="fechaInicio"></span></p>
+      <p><strong>Tiempo trabajado:</strong> <span id="tiempoTrabajado"></span></p>
+      <p><strong>Días restantes para tu cumpleaños:</strong> <span id="diasParaCumple"></span></p>
+    </section>
+  </main>
+
+  <div class="toggle-mode desktop-only" id="toggleDesktop">
+    <input type="checkbox" id="switchModo" onchange="cambiarModo()">
+  </div>
+
+  <script>
+    function mostrarPanelUsuario() {
+      const usuario = JSON.parse(sessionStorage.getItem("usuario"));
+      if (!usuario) return window.location.href = "/portal-rh/index.html";
+
+      mostrarInformacionUsuario();
+
+      const nombreCompleto = usuario.nombre || "Usuario";
+      const primerNombre = nombreCompleto.split(" ")[0] || "Usuario";
+
+      if (window.innerWidth <= 768) {
+        document.getElementById("saludoTexto").innerText = "Hola,";
+        document.getElementById("nombreUsuario").innerText = primerNombre.toUpperCase();
+        document.getElementById("toggleDesktop").style.display = "none";
+      } else {
+        document.getElementById("saludoTexto").innerText = "Bienvenido,";
+        document.getElementById("nombreUsuario").innerText = nombreCompleto;
+      }
+
+      if (localStorage.getItem('modo') === 'claro') {
+        document.body.classList.add('light-mode');
+        const switchModo = document.getElementById('switchModo');
+        if (switchModo) switchModo.checked = true;
+      }
+
+      const modoActual = document.body.classList.contains('light-mode') ? 'Modo Oscuro' : 'Modo Claro';
+
+      const menuDesktop = document.getElementById("menuDesktop");
+      const menuMobile = document.getElementById("menuMobile");
+
+      let enlaces = [
+        { icono: "👤", texto: "Perfil", url: "/portal-rh/perfil/index.html" },
+        { icono: "📄", texto: "Nóminas", url: "/portal-rh/dashboard/usuario/nomina/index.html" },
+        { icono: "🎓", texto: "Capacitaciones", url: "/portal-rh/dashboard/usuario/capacitacion/index.html" },
+      ];
+
+      // Agregar enlaces para Moderador
+      if (usuario.moderador) {
+        enlaces.push({ icono: "ℹ️", texto: "Información", url: "/portal-rh/dashboard/informacion/index.html" });
+        enlaces.push({ icono: "🔧", texto: "Moderador", url: "/portal-rh/dashboard/mod/index.html" });
+      }
+
+      // Agregar enlaces para Administrador
+      if (usuario.administrador) {
+        enlaces.push({ icono: "🛡️", texto: "Administrador", url: "/portal-rh/dashboard/admin/index.html" });
+      }
+
+      // Añadir modo claro/oscuro solo en dispositivos móviles
+      if (window.innerWidth <= 768) {
+        enlaces.push({ icono: "🌓", texto: modoActual, onclick: "cambiarModo()" });
+      }
+
+      // Añadir enlace de cerrar sesión
+      enlaces.push({ icono: "🚪", texto: "Cerrar sesión", onclick: "cerrarSesion()" });
+
+      // Generar el HTML para el menú
+      let htmlDesktop = "", htmlMobile = "";
+
+      enlaces.forEach(link => {
+        const contenido = `${link.icono} ${link.texto}`;
+        const textoSolo = `${link.texto}`;
+
+        if (link.onclick) {
+          htmlDesktop += `<a href="#" onclick="${link.onclick}">${textoSolo}</a>`;
+          htmlMobile += `<a href="#" onclick="${link.onclick}">${contenido}</a>`;
+        } else {
+          htmlDesktop += `<a href="${link.url}">${textoSolo}</a>`;
+          htmlMobile += `<a href="${link.url}">${contenido}</a>`;
+        }
+      });
+
+      menuDesktop.innerHTML = htmlDesktop;
+      menuMobile.innerHTML = htmlMobile;
+    }
+
+    function toggleMenu() {
+      document.getElementById("menuMobile").classList.toggle("show");
+    }
+
+    function cambiarModo() {
+      const body = document.body;
+      const esClaro = body.classList.toggle('light-mode');
+      localStorage.setItem('modo', esClaro ? 'claro' : 'oscuro');
+      mostrarPanelUsuario(); // actualiza el texto del botón
+    }
+
+    function cerrarSesion() {
+      sessionStorage.clear();
+      window.location.href = "/portal-rh/index.html";
+    }
+  </script>
+</body>
+</html>

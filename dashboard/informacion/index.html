@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Información - Portal MCV</title>
+  <link rel="icon" type="image/png" href="https://mediosconvalor.com/wp-content/uploads/2019/03/cropped-favicon-32x32-1-32x32.png">
+  <link rel="stylesheet" href="/portal-rh/styles.css" />
+  <script src="/portal-rh/script.js" defer></script>
+  <style>
+    .container {
+      padding: 20px;
+      background-color: #3f4555;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #00dd2a;
+      text-align: center;
+    }
+
+    .filter-section {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .filter-section input, .filter-section select {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #2596be;
+      background-color: #fff;
+      font-size: 1rem;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border: 1px solid #00dd2a;
+    }
+
+    th {
+      background-color: #2596be;
+      color: white;
+    }
+
+    td {
+      background-color: #2c2f3a;
+      color: white;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 100%;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #2596be;
+      background-color: #fff;
+    }
+  </style>
+</head>
+<body onload="mostrarPanelUsuario()">
+
+  <div class="container">
+    <header>
+      <button class="nav-toggle" onclick="toggleMenu()">☰</button>
+      <h1>Información IMPORTANTE</h1>
+      <img class="logo" src="/portal-rh/img/logo.png" alt="Logo MCV" />
+    </header>
+
+    <p>Esta sección contiene información de todo el personal. Puedes buscar por nombre o filtrar por sucursal.</p>
+
+    <!-- Filtros -->
+    <div class="filter-section">
+      <input type="text" id="searchInput" placeholder="Buscar por nombre..." onkeyup="filterData()">
+      <select id="sucursalSelect" onchange="filterData()">
+        <option value="">Filtrar por Sucursal</option>
+        <option value="Querétaro">Querétaro</option>
+        <option value="Monterrey">Monterrey</option>
+        <option value="Aguascalientes">Aguascalientes</option>
+        <option value="MCV">MCV</option>
+      </select>
+    </div>
+
+    <!-- Tabla de empleados -->
+    <table id="employeeTable">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Sucursal</th>
+          <th>Contacto de Emergencia</th>
+          <th>Jefe Directo</th>
+        </tr>
+      </thead>
+      <tbody id="employeeList">
+        <!-- Los empleados se agregarán aquí dinámicamente -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // URL de la API o el Google Sheets con la información de los empleados
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwIdbktBmWY3x-CVLF9oVhwHNEcItxaVcN1ph61umzHgXwDtu7qQXkaXM-MKW7sNHFy/exec";
+
+    // Función para obtener los datos de los empleados desde Google Sheets o cualquier API
+    function fetchEmployees() {
+      fetch(scriptURL)
+        .then(response => response.json())
+        .then(data => {
+          renderEmployeeList(data);
+        })
+        .catch(error => {
+          console.error("Error al obtener los datos de los empleados:", error);
+        });
+    }
+
+    // Renderizar la lista de empleados
+    function renderEmployeeList(employees) {
+      const listContainer = document.getElementById('employeeList');
+      listContainer.innerHTML = ''; // Limpiar la lista actual
+
+      if (employees && employees.length > 0) {
+        employees.forEach(emp => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${emp.name}</td>
+            <td>${emp.sucursal}</td>
+            <td>${emp.contactoEmergencia || "No disponible"}</td>
+            <td>${emp.jefeDirecto || "No asignado"}</td>
+          `;
+          listContainer.appendChild(row);
+        });
+      } else {
+        listContainer.innerHTML = `<tr><td colspan="4" style="text-align: center;">No hay empleados disponibles</td></tr>`;
+      }
+    }
+
+    // Filtrar empleados por nombre o sucursal
+    function filterData() {
+      const searchInput = document.getElementById('searchInput').value.toLowerCase();
+      const sucursalSelect = document.getElementById('sucursalSelect').value;
+
+      fetch(scriptURL)
+        .then(response => response.json())
+        .then(data => {
+          const filteredEmployees = data.filter(emp => {
+            return (emp.name.toLowerCase().includes(searchInput) && 
+                    (sucursalSelect === "" || emp.sucursal === sucursalSelect));
+          });
+
+          renderEmployeeList(filteredEmployees);
+        })
+        .catch(error => {
+          console.error("Error al filtrar los empleados:", error);
+        });
+    }
+
+    // Inicializar la página
+    fetchEmployees();
+  </script>
+
+</body>
+</html>

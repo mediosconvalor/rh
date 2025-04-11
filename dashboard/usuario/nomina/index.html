@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Usuario | Nóminas</title>
+  <link rel="icon" type="image/png" href="https://mediosconvalor.com/wp-content/uploads/2019/03/cropped-favicon-32x32-1-32x32.png">
+  <link rel="stylesheet" href="/portal-rh/styles.css" />
+  <script src="/portal-rh/script.js" defer></script>
+</head>
+<body onload="cargarNominas()">
+  <header>
+    <button class="nav-toggle" onclick="toggleMenu()">☰</button>
+    <h1>Usuario | Nóminas</h1>
+    <img class="logo" src="/portal-rh/img/logo.png" alt="Logo MCV" />
+  </header>
+
+  <main>
+    <section>
+      <h3>Buscar Nómina</h3>
+      <label for="buscadorNomina">Buscar por periodo:</label>
+      <input type="text" id="buscadorNomina" onkeyup="filtrarNominas()">
+      <ul id="nominasList"></ul>
+    </section>
+  </main>
+
+  <script>
+    const nominas = [
+      { periodo: 'Enero 2025', monto: '$5000' },
+      { periodo: 'Febrero 2025', monto: '$5500' },
+      { periodo: 'Marzo 2025', monto: '$5200' },
+      // Agregar más nóminas si es necesario
+    ];
+
+    function cargarNominas() {
+      const listaNominas = document.getElementById('nominasList');
+      nominas.forEach(nomina => {
+        const li = document.createElement('li');
+        li.textContent = `${nomina.periodo} - ${nomina.monto}`;
+        listaNominas.appendChild(li);
+      });
+    }
+
+    function filtrarNominas() {
+      const busqueda = document.getElementById('buscadorNomina').value.toLowerCase();
+      const listaFiltrada = nominas.filter(nomina => nomina.periodo.toLowerCase().includes(busqueda));
+      const listaNominas = document.getElementById('nominasList');
+      listaNominas.innerHTML = '';
+      listaFiltrada.forEach(nomina => {
+        const li = document.createElement('li');
+        li.textContent = `${nomina.periodo} - ${nomina.monto}`;
+        listaNominas.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>

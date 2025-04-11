@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel Moderador - Portal MCV</title>
+  <link rel="icon" type="image/png" href="https://mediosconvalor.com/wp-content/uploads/2019/03/cropped-favicon-32x32-1-32x32.png">
+  <link rel="stylesheet" href="/portal-rh/styles.css" />
+  <script src="/portal-rh/script.js" defer></script>
+</head>
+<body onload="verificarAccesoMod()">
+
+  <nav id="menuMobile" class="menu-mobile"></nav>
+
+  <header>
+    <button class="nav-toggle" onclick="toggleMenu()">☰</button>
+    <h1 id="saludoUsuario"><span id="saludoTexto">Bienvenido,</span> <span id="nombreUsuario">Moderador</span></h1>
+    <img class="logo" src="/portal-rh/img/logo.png" alt="Logo MCV" />
+  </header>
+
+  <main>
+    <section>
+      <h3>Panel de Moderador</h3>
+      <p>Contenido exclusivo para usuarios con rol de moderador.</p>
+    </section>
+
+    <section class="section-formulario">
+      <h2>Subir</h2>
+      <iframe src="https://script.google.com/macros/s/AKfycbyPY0oSo2nOEgUra6nwLcwpUD4fqysBGIlBnKzzKwJMiu36qDK83BYuZJhY-ZvO9scG4A/exec" style="width:100%; height:400px; border:none; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.2);">
+    </iframe>    
+    </section>
+
+  </main>
+
+  <div class="toggle-mode" id="toggleDesktop">
+    <input type="checkbox" id="switchModo" onchange="cambiarModo()">
+  </div>
+
+  <script>
+    function verificarAccesoMod() {
+      const usuario = JSON.parse(sessionStorage.getItem("usuario"));
+      if (!usuario || !usuario.moderador) {
+        window.location.href = "/portal-rh/dashboard/usuario/index.html";
+        return;
+      }
+      mostrarPanelModerador();
+    }
+
+    function mostrarPanelModerador() {
+      const usuario = JSON.parse(sessionStorage.getItem("usuario"));
+      const nombreCompleto = usuario.nombre || "Moderador";
+      const primerNombre = nombreCompleto.split(" ")[0] || "Moderador";
+
+      if (window.innerWidth <= 768) {
+        document.getElementById("saludoTexto").innerText = "Hola,";
+        document.getElementById("nombreUsuario").innerText = primerNombre.toUpperCase();
+        document.getElementById("toggleDesktop").style.display = "none";
+      } else {
+        document.getElementById("saludoTexto").innerText = "Bienvenido,";
+        document.getElementById("nombreUsuario").innerText = nombreCompleto;
+      }
+
+      if (localStorage.getItem('modo') === 'claro') {
+        document.body.classList.add('light-mode');
+        const switchModo = document.getElementById('switchModo');
+        if (switchModo) switchModo.checked = true;
+      }
+
+      const modoActual = document.body.classList.contains('light-mode') ? 'Modo Oscuro' : 'Modo Claro';
+
+      const enlaces = [
+        { icono: "🏠", texto: "Inicio", url: "/portal-rh/dashboard/usuario/index.html" },
+        { icono: "👤", texto: "Perfil", url: "/portal-rh/perfil/index.html" },
+        { icono: "📄", texto: "Nóminas", url: "/portal-rh/dashboard/usuario/nomina/index.html" },
+        { icono: "🎓", texto: "Capacitaciones", url: "/portal-rh/dashboard/usuario/capacitacion/index.html" },
+        { icono: "🔧", texto: "Moderador", url: "/portal-rh/dashboard/mod/index.html" }
+      ];
+
+      if (usuario.administrador) {
+        enlaces.push({ icono: "🛡️", texto: "Administrador", url: "/portal-rh/dashboard/admin/index.html" });
+      }
+
+      if (window.innerWidth <= 768 || window.innerWidth >= 768) {
+        enlaces.push({ icono: "🌙", texto: modoActual, onclick: "cambiarModo()" });
+      }
+
+      enlaces.push({ icono: "🚪", texto: "Cerrar sesión", onclick: "cerrarSesion()" });
+
+      const menu = document.getElementById("menuMobile");
+      let html = "";
+
+      enlaces.forEach(link => {
+        const contenido = `${link.icono} ${link.texto}`;
+        if (link.onclick) {
+          html += `<a href="#" onclick="${link.onclick}">${contenido}</a>`;
+        } else {
+          html += `<a href="${link.url}">${contenido}</a>`;
+        }
+      });
+
+      menu.innerHTML = html;
+    }
+
+    function toggleMenu() {
+      document.getElementById("menuMobile").classList.toggle("show");
+    }
+
+    function cambiarModo() {
+      const body = document.body;
+      const esClaro = body.classList.toggle('light-mode');
+      localStorage.setItem('modo', esClaro ? 'claro' : 'oscuro');
+      mostrarPanelModerador();
+    }
+
+    function cerrarSesion(){
+      sessionStorage.clear();
+      window.location.href = '/portal-rh/index.html';
+    }
+  </script>
+</body>
+</html>
