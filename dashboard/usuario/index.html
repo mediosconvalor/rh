@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Usuario</title>
   <link rel="icon" type="image/png" href="https://mediosconvalor.com/wp-content/uploads/2019/03/cropped-favicon-32x32-1-32x32.png">
-  <link rel="stylesheet" href="/portal-rh/styles.css" />
-  <script src="/portal-rh/script.js" defer></script>
+  <link rel="stylesheet" href="https://raw.githubusercontent.com/mediosconvalor/rh/refs/heads/main/styles.css" />
+  <script src="https://raw.githubusercontent.com/mediosconvalor/rh/refs/heads/main/script.js" defer></script>
 </head>
 <body onload="mostrarPanelUsuario()">
   <nav id="menuMobile" class="menu-mobile"></nav>
@@ -14,7 +14,7 @@
   <header>
     <button class="nav-toggle" onclick="toggleMenu()">☰</button>
     <h1 id="saludoUsuario"><span id="saludoTexto">Bienvenido,</span> <span id="nombreUsuario">Usuario</span></h1>
-    <img class="logo" src="/portal-rh/img/logo.png" alt="Logo MCV" />
+    <img class="logo" src="/img/logo.png" alt="Logo MCV" />
   </header>
 
   <nav id="menuDesktop" class="menu-desktop"></nav>
@@ -38,7 +38,7 @@
   <script>
     function mostrarPanelUsuario() {
       const usuario = JSON.parse(sessionStorage.getItem("usuario"));
-      if (!usuario) return window.location.href = "/portal-rh/index.html";
+      if (!usuario) return window.location.href = "index.html";
 
       mostrarInformacionUsuario();
 
@@ -66,20 +66,20 @@
       const menuMobile = document.getElementById("menuMobile");
 
       let enlaces = [
-        { icono: "👤", texto: "Perfil", url: "/portal-rh/perfil/index.html" },
-        { icono: "📄", texto: "Nóminas", url: "/portal-rh/dashboard/usuario/nomina/index.html" },
-        { icono: "🎓", texto: "Capacitaciones", url: "/portal-rh/dashboard/usuario/capacitacion/index.html" },
+        { icono: "👤", texto: "Perfil", url: "./perfil/index.html" },
+        { icono: "📄", texto: "Nóminas", url: "./dashboard/usuario/nomina/index.html" },
+        { icono: "🎓", texto: "Capacitaciones", url: "./dashboard/usuario/capacitacion/index.html" },
       ];
 
       // Agregar enlaces para Moderador
       if (usuario.moderador) {
-        enlaces.push({ icono: "ℹ️", texto: "Información", url: "/portal-rh/dashboard/informacion/index.html" });
-        enlaces.push({ icono: "🔧", texto: "Moderador", url: "/portal-rh/dashboard/mod/index.html" });
+        enlaces.push({ icono: "ℹ️", texto: "Información", url: "/dashboard/informacion/index.html" });
+        enlaces.push({ icono: "🔧", texto: "Moderador", url: "/dashboard/mod/index.html" });
       }
 
       // Agregar enlaces para Administrador
       if (usuario.administrador) {
-        enlaces.push({ icono: "🛡️", texto: "Administrador", url: "/portal-rh/dashboard/admin/index.html" });
+        enlaces.push({ icono: "🛡️", texto: "Administrador", url: "/dashboard/admin/index.html" });
       }
 
       // Añadir modo claro/oscuro solo en dispositivos móviles
@@ -123,7 +123,7 @@
 
     function cerrarSesion() {
       sessionStorage.clear();
-      window.location.href = "/portal-rh/index.html";
+      window.location.href = "./index.html";
     }
   </script>
 </body>
