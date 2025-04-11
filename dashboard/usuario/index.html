@@ -66,14 +66,14 @@
       const menuMobile = document.getElementById("menuMobile");
 
       let enlaces = [
-        { icono: "👤", texto: "Perfil", url: "./perfil/index.html" },
-        { icono: "📄", texto: "Nóminas", url: "./dashboard/usuario/nomina/index.html" },
-        { icono: "🎓", texto: "Capacitaciones", url: "./dashboard/usuario/capacitacion/index.html" },
+        { icono: "👤", texto: "Perfil", url: "../../perfil/index.html" },
+        { icono: "📄", texto: "Nóminas", url: "../dashboard/usuario/nomina/index.html" },
+        { icono: "🎓", texto: "Capacitaciones", url: "../dashboard/usuario/capacitacion/index.html" },
       ];
 
       // Agregar enlaces para Moderador
       if (usuario.moderador) {
-        enlaces.push({ icono: "ℹ️", texto: "Información", url: "/dashboard/informacion/index.html" });
+        enlaces.push({ icono: "ℹ️", texto: "Información", url: "../dashboard/informacion/index.html" });
         enlaces.push({ icono: "🔧", texto: "Moderador", url: "/dashboard/mod/index.html" });
       }
 
